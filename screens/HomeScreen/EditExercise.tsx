@@ -1,37 +1,32 @@
 import { Button, Input, Modal } from 'native-base';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Exercise } from '../../types';
 
-type AddExerciseProps = {
+type EditExerciseProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  exerciseList: Exercise[];
-  setExerciseList: (updatedList: Exercise[]) => Promise<void>;
+  exercise: Exercise;
+  editExercise: (name: string) => void;
 };
-
-function AddExercise({
+function EditExercise({
   open,
   setOpen,
-  exerciseList,
-  setExerciseList,
-}: AddExerciseProps) {
-  const [input, setInput] = useState('');
-
-  const addExercise = () => {
-    setExerciseList([...exerciseList, { name: input, count: 0 }]);
-    setInput('');
-    setOpen(false);
-  };
-
+  exercise,
+  editExercise,
+}: EditExerciseProps) {
+  const [input, setInput] = useState(exercise.name);
+  useEffect(() => {
+    setInput(exercise.name);
+  }, [exercise.name]);
   return (
     <Modal isOpen={open} onClose={() => setOpen(false)} safeAreaTop={true}>
-      <Modal.Content>
+      <Modal.Content style={{}}>
         <Modal.CloseButton />
-        <Modal.Header>Add Exercise</Modal.Header>
+        <Modal.Header>Edit Exercise</Modal.Header>
         <Modal.Body>
           <Input
             value={input}
-            placeholder="New exercise"
+            placeholder="Exercise name"
             onChangeText={(text: React.SetStateAction<string>) =>
               setInput(text)
             }
@@ -39,10 +34,14 @@ function AddExercise({
         </Modal.Body>
         <Modal.Footer>
           <Button.Group space={2}>
-            <Button variant="ghost" onPress={() => setOpen(false)}>
+            <Button
+              variant="ghost"
+              onPress={() => {
+                setOpen(false);
+              }}>
               Cancel
             </Button>
-            <Button onPress={addExercise}>Save</Button>
+            <Button onPress={() => editExercise(input)}>Save</Button>
           </Button.Group>
         </Modal.Footer>
       </Modal.Content>
@@ -50,4 +49,4 @@ function AddExercise({
   );
 }
 
-export default AddExercise;
+export default EditExercise;

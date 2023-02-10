@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AddIcon, Fab, ScrollView} from 'native-base';
-import React, {useEffect, useState} from 'react';
-import {ViewStyle} from 'react-native';
-import {Exercise} from '../../types';
+import { AddIcon, Fab, ScrollView } from 'native-base';
+import React, { useEffect, useState } from 'react';
+import { ViewStyle } from 'react-native';
+import { Exercise } from '../../types';
 import AddExercise from './AddExercise';
 import ExerciseList from './ExerciseList';
 
 function HomeScreen() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [open, setOpen] = useState(false);
+  const [openAddExercise, setOpenAddExercise] = useState(false);
 
   useEffect(() => {
     const getLocalList = async () => {
@@ -44,17 +44,18 @@ function HomeScreen() {
           exerciseList={exercises}
           incrementExerciseCounter={incrementExerciseCounter}
           deleteExercise={deleteExercise}
+          setExerciseList={setLocalList}
         />
         <Fab
           position="absolute"
           size="sm"
           icon={<AddIcon />}
-          onPress={() => setOpen(true)}
+          onPress={() => setOpenAddExercise(true)}
         />
       </ScrollView>
       <AddExercise
-        open={open}
-        setOpen={setOpen}
+        open={openAddExercise}
+        setOpen={setOpenAddExercise}
         exerciseList={exercises}
         setExerciseList={setLocalList}
       />
