@@ -15,6 +15,7 @@ import EditExercise from './EditExercise';
 type ExerciseListProps = {
   exerciseList: Exercise[];
   incrementExerciseCounter: (index: number) => void;
+  decrementExerciseCounter: (index: number) => void;
   deleteExercise: (exercise: Exercise) => void;
   setExerciseList: (updatedList: Exercise[]) => Promise<void>;
 };
@@ -22,6 +23,7 @@ type ExerciseListProps = {
 function ExerciseList({
   exerciseList,
   incrementExerciseCounter,
+  decrementExerciseCounter,
   deleteExercise,
   setExerciseList,
 }: ExerciseListProps) {
@@ -41,7 +43,7 @@ function ExerciseList({
   };
 
   return (
-    <Box>
+    <Box safeAreaTop>
       {exerciseList.map((exercise, index) => {
         return (
           <Pressable
@@ -54,7 +56,9 @@ function ExerciseList({
               <Text>{exercise.name}</Text>
               <HStack style={$values}>
                 <Text>{exercise.count}</Text>
-                <Button onPress={() => incrementExerciseCounter(index)}>
+                <Button
+                  onPress={() => incrementExerciseCounter(index)}
+                  onLongPress={() => decrementExerciseCounter(index)}>
                   Bump
                 </Button>
                 <IconButton

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AddIcon, Fab, ScrollView } from 'native-base';
+import { AddIcon, Fab, ScrollView, useToast } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { ViewStyle } from 'react-native';
 import { Exercise } from '../../types';
@@ -9,6 +9,7 @@ import ExerciseList from './ExerciseList';
 function HomeScreen() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [openAddExercise, setOpenAddExercise] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     const getLocalList = async () => {
@@ -35,6 +36,22 @@ function HomeScreen() {
     const newList = [...exercises];
     newList[index].count++;
     setLocalList(newList);
+    toast.show({
+      description: 'Increased 🎉',
+      placement: 'bottom',
+      duration: 1000,
+    });
+  };
+
+  const decrementExerciseCounter = (index: number) => {
+    const newList = [...exercises];
+    newList[index].count--;
+    setLocalList(newList);
+    toast.show({
+      description: 'Decreased 😢',
+      placement: 'bottom',
+      duration: 1000,
+    });
   };
 
   return (
@@ -43,6 +60,7 @@ function HomeScreen() {
         <ExerciseList
           exerciseList={exercises}
           incrementExerciseCounter={incrementExerciseCounter}
+          decrementExerciseCounter={decrementExerciseCounter}
           deleteExercise={deleteExercise}
           setExerciseList={setLocalList}
         />
