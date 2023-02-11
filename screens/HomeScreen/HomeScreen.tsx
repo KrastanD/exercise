@@ -45,6 +45,9 @@ function HomeScreen() {
 
   const decrementExerciseCounter = (index: number) => {
     const newList = [...exercises];
+    if (newList[index].count <= 0) {
+      return;
+    }
     newList[index].count--;
     setLocalList(newList);
     toast.show({
