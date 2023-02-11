@@ -53,9 +53,18 @@ function ExerciseList({
               setOpenEditExercise(true);
             }}>
             <HStack style={$row}>
-              <Text>{exercise.name}</Text>
-              <HStack style={$values}>
-                <Text>{exercise.count}</Text>
+              <Text isTruncated w="55%">
+                {exercise.name}
+              </Text>
+              <HStack style={$values} alignSelf={'flex-end'}>
+                <Box
+                  alignItems={'center'}
+                  w={35}
+                  borderRadius={5}
+                  borderWidth={1}
+                  paddingY={2}>
+                  <Text>{exercise.count}</Text>
+                </Box>
                 <Button
                   onPress={() => incrementExerciseCounter(index)}
                   onLongPress={() => decrementExerciseCounter(index)}>
