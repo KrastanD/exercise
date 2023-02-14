@@ -1,23 +1,27 @@
 import { Button, Input, Modal } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Exercise } from '../../types';
+import useExerciseStore from '../../state/useExerciseStore';
 
 type EditExerciseProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  exercise: Exercise;
-  editExercise: (name: string) => void;
+  exerciseId: string;
+  editExercise: (id: string, name: string) => void;
 };
 function EditExercise({
   open,
   setOpen,
-  exercise,
+  exerciseId,
   editExercise,
 }: EditExerciseProps) {
+  const exerciseStore = useExerciseStore();
+  const exercise = exerciseStore.exercises[exerciseId];
   const [input, setInput] = useState(exercise.name);
+
   useEffect(() => {
     setInput(exercise.name);
   }, [exercise.name]);
+
   return (
     <Modal isOpen={open} onClose={() => setOpen(false)} safeAreaTop={true}>
       <Modal.Content style={{}}>
@@ -41,7 +45,9 @@ function EditExercise({
               }}>
               Cancel
             </Button>
-            <Button onPress={() => editExercise(input)}>Save</Button>
+            <Button onPress={() => editExercise(exerciseId, input)}>
+              Save
+            </Button>
           </Button.Group>
         </Modal.Footer>
       </Modal.Content>
