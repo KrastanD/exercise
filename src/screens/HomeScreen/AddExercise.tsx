@@ -6,30 +6,26 @@ import {
   WarningOutlineIcon,
 } from 'native-base';
 import React, { useState } from 'react';
-import { Exercise } from '../../types';
+import useExerciseStore from '../../state/useExerciseStore';
 
 type AddExerciseProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  exerciseList: Exercise[];
-  setExerciseList: (updatedList: Exercise[]) => Promise<void>;
 };
 
-function AddExercise({
-  open,
-  setOpen,
-  exerciseList,
-  setExerciseList,
-}: AddExerciseProps) {
+function AddExercise({ open, setOpen }: AddExerciseProps) {
   const [input, setInput] = useState('');
+  const exerciseStore = useExerciseStore();
 
   const addExercise = () => {
-    setExerciseList([...exerciseList, { name: input, count: 0 }]);
+    exerciseStore.addExercise(input);
     setInput('');
     setOpen(false);
   };
 
-  const isInputInExerciseList = exerciseList.map(e => e.name).includes(input);
+  const isInputInExerciseList = Object.values(exerciseStore.exercises)
+    .map(e => e.name)
+    .includes(input);
 
   return (
     <Modal isOpen={open} onClose={() => setOpen(false)} safeAreaTop={true}>

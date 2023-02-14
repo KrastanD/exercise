@@ -6,50 +6,54 @@ import {
   IconButton,
   Pressable,
   Text,
+  useToast,
 } from 'native-base';
 import React, { useState } from 'react';
 import { ViewStyle } from 'react-native';
-import { Exercise } from '../../types';
+import useExerciseStore from '../../state/useExerciseStore';
 import EditExercise from './EditExercise';
 
-type ExerciseListProps = {
-  exerciseList: Exercise[];
-  incrementExerciseCounter: (index: number) => void;
-  decrementExerciseCounter: (index: number) => void;
-  deleteExercise: (exercise: Exercise) => void;
-  setExerciseList: (updatedList: Exercise[]) => Promise<void>;
-};
-
-function ExerciseList({
-  exerciseList,
-  incrementExerciseCounter,
-  decrementExerciseCounter,
-  deleteExercise,
-  setExerciseList,
-}: ExerciseListProps) {
+function ExerciseList() {
   const [openEditExercise, setOpenEditExercise] = useState(false);
-  const [exerciseForEdit, setExerciseForEdit] = useState<undefined | Exercise>(
-    undefined,
-  );
+  const [exerciseForEdit, setExerciseForEdit] = useState<string>('');
 
-  const editExercise = (name: string) => {
-    const newList = [...exerciseList];
-    const index = exerciseList.findIndex(
-      ex => ex.name === exerciseForEdit?.name,
-    );
-    newList[index].name = name;
-    setExerciseList(newList);
+  const toast = useToast();
+  const exerciseStore = useExerciseStore();
+
+  const editExercise = (id: string, name: string) => {
+    exerciseStore.editExercise(id, name);
     setOpenEditExercise(false);
+  };
+
+  const incrementExerciseCounter = (id: string) => {
+    exerciseStore.incrementExerciseCount(id);
+    toast.show({
+      description: 'Increased 🎉',
+      placement: 'bottom',
+      duration: 1000,
+    });
+  };
+
+  const decrementExerciseCounter = (id: string) => {
+    if (exerciseStore.exercises[id].count > 0) {
+      exerciseStore.decrementExerciseCount(id);
+      toast.show({
+        description: 'Decreased 😢',
+        placement: 'bottom',
+        duration: 1000,
+      });
+    }
   };
 
   return (
     <Box safeAreaTop>
-      {exerciseList.map((exercise, index) => {
+      {Object.keys(exerciseStore.exercises).map(exerciseId => {
+        const exercise = exerciseStore.exercises[exerciseId];
         return (
           <Pressable
-            key={exercise.name}
+            key={exerciseId}
             onPress={() => {
-              setExerciseForEdit(exercise);
+              setExerciseForEdit(exerciseId);
               setOpenEditExercise(true);
             }}>
             <HStack style={$row}>
@@ -66,14 +70,14 @@ function ExerciseList({
                   <Text>{exercise.count}</Text>
                 </Box>
                 <Button
-                  onPress={() => incrementExerciseCounter(index)}
-                  onLongPress={() => decrementExerciseCounter(index)}>
+                  onPress={() => incrementExerciseCounter(exerciseId)}
+                  onLongPress={() => decrementExerciseCounter(exerciseId)}>
                   Bump
                 </Button>
                 <IconButton
                   variant="ghost"
                   icon={<DeleteIcon color="red.400" />}
-                  onPress={() => deleteExercise(exercise)}
+                  onPress={() => exerciseStore.deleteExercise(exerciseId)}
                 />
               </HStack>
             </HStack>
@@ -84,7 +88,7 @@ function ExerciseList({
         <EditExercise
           open={openEditExercise}
           setOpen={setOpenEditExercise}
-          exercise={exerciseForEdit}
+          exerciseId={exerciseForEdit}
           editExercise={editExercise}
         />
       )}
