@@ -14,18 +14,20 @@ type AddExerciseProps = {
 };
 
 function AddExercise({ open, setOpen }: AddExerciseProps) {
-  const [input, setInput] = useState('');
+  const [name, setName] = useState('');
+  const [step, setStep] = useState(1);
   const exerciseStore = useExerciseStore();
 
   const addExercise = () => {
-    exerciseStore.addExercise(input);
-    setInput('');
+    exerciseStore.addExercise(name, step);
+    setName('');
+    setStep(1);
     setOpen(false);
   };
 
   const isInputInExerciseList = Object.values(exerciseStore.exercises)
     .map(e => e.name)
-    .includes(input);
+    .includes(name);
 
   return (
     <Modal isOpen={open} onClose={() => setOpen(false)} safeAreaTop={true}>
@@ -34,16 +36,25 @@ function AddExercise({ open, setOpen }: AddExerciseProps) {
         <Modal.Header>Add Exercise</Modal.Header>
         <Modal.Body>
           <FormControl isInvalid={isInputInExerciseList} w="75%" maxW="300px">
+            <FormControl.Label>Name</FormControl.Label>
             <Input
-              value={input}
+              value={name}
               placeholder="New exercise"
               onChangeText={(text: React.SetStateAction<string>) =>
-                setInput(text)
+                setName(text)
               }
+            />
+            <FormControl.Label>Step</FormControl.Label>
+            <Input
+              value={step.toString()}
+              inputMode="numeric"
+              onChangeText={(str: React.SetStateAction<string>) => {
+                setStep(Number(str));
+              }}
             />
             <FormControl.ErrorMessage
               leftIcon={<WarningOutlineIcon size="xs" />}>
-              This exercise already exists. Try a different one.
+              This exercise name already exists. Try a different one.
             </FormControl.ErrorMessage>
           </FormControl>
         </Modal.Body>
@@ -53,7 +64,7 @@ function AddExercise({ open, setOpen }: AddExerciseProps) {
               Cancel
             </Button>
             <Button
-              isDisabled={isInputInExerciseList || input.length === 0}
+              isDisabled={isInputInExerciseList || name.length === 0}
               onPress={addExercise}>
               Save
             </Button>

@@ -7,7 +7,7 @@ import { Exercise } from '../../types';
 
 interface ExerciseStore {
   exercises: Record<string, Exercise>;
-  addExercise: (name: string) => void;
+  addExercise: (name: string, step: number) => void;
   deleteExercise: (id: string) => void;
   incrementExerciseCount: (id: string, value?: number) => void;
   decrementExerciseCount: (id: string, value?: number) => void;
@@ -19,10 +19,10 @@ const useExerciseStore = create<ExerciseStore>()(
     persist(
       set => ({
         exercises: {},
-        addExercise: name =>
+        addExercise: (name: string, step = 1) =>
           set(state => {
             const id = uuid.v4().toString();
-            state.exercises[id] = { name: name, count: 0 };
+            state.exercises[id] = { name: name, count: 0, step: step };
           }),
         deleteExercise: id =>
           set(state => {
@@ -32,13 +32,13 @@ const useExerciseStore = create<ExerciseStore>()(
           set(state => {
             state.exercises[id].name = name;
           }),
-        incrementExerciseCount: (id, value = 1) =>
+        incrementExerciseCount: id =>
           set(state => {
-            state.exercises[id].count += value;
+            state.exercises[id].count += state.exercises[id].step;
           }),
-        decrementExerciseCount: (id, value = 1) =>
+        decrementExerciseCount: id =>
           set(state => {
-            state.exercises[id].count -= value;
+            state.exercises[id].count -= state.exercises[id].step;
           }),
       }),
       {
