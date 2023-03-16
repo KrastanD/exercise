@@ -1,4 +1,3 @@
-import { Button, Input, Modal } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import useExerciseStore from '../../state/useExerciseStore';
 

@@ -1,11 +1,15 @@
+import React, { useState } from 'react';
+import { X } from '@tamagui/lucide-icons';
 import {
   Button,
-  FormControl,
+  Dialog,
+  Fieldset,
   Input,
-  Modal,
-  WarningOutlineIcon,
-} from 'native-base';
-import React, { useState } from 'react';
+  Label,
+  Text,
+  Unspaced,
+  YStack,
+} from 'tamagui';
 import useExerciseStore from '../../state/useExerciseStore';
 
 type AddExerciseProps = {
@@ -30,48 +34,45 @@ function AddExercise({ open, setOpen }: AddExerciseProps) {
     .includes(name);
 
   return (
-    <Modal isOpen={open} onClose={() => setOpen(false)} safeAreaTop={true}>
-      <Modal.Content>
-        <Modal.CloseButton />
-        <Modal.Header>Add Exercise</Modal.Header>
-        <Modal.Body>
-          <FormControl isInvalid={isInputInExerciseList} w="75%" maxW="300px">
-            <FormControl.Label>Name</FormControl.Label>
-            <Input
-              value={name}
-              placeholder="New exercise"
-              onChangeText={(text: React.SetStateAction<string>) =>
-                setName(text)
-              }
-            />
-            <FormControl.Label>Step</FormControl.Label>
-            <Input
-              value={step.toString()}
-              inputMode="numeric"
-              onChangeText={(str: React.SetStateAction<string>) => {
-                setStep(Number(str));
-              }}
-            />
-            <FormControl.ErrorMessage
-              leftIcon={<WarningOutlineIcon size="xs" />}>
-              This exercise name already exists. Try a different one.
-            </FormControl.ErrorMessage>
-          </FormControl>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button.Group space={2}>
-            <Button variant="ghost" onPress={() => setOpen(false)}>
-              Cancel
+    <Dialog.Portal>
+      <Dialog.Overlay key="overlay" />
+      <Dialog.Content bordered elevate key="content" space>
+        <Dialog.Title>Add Exercise</Dialog.Title>
+        <Fieldset space="$4" horizontal>
+          <Text justifyContent="flex-end">Name</Text>
+          <Input
+            id="name"
+            value={name}
+            onChangeText={(text: React.SetStateAction<string>) => setName(text)}
+          />
+        </Fieldset>
+        <Fieldset space="$4" horizontal>
+          <Text justifyContent="flex-end">Step</Text>
+          <Input
+            id="step"
+            value={step.toString()}
+            inputMode="numeric"
+            onChangeText={(str: React.SetStateAction<string>) => {
+              setStep(Number(str));
+            }}
+          />
+        </Fieldset>
+
+        <YStack alignItems="flex-end" marginTop="$2">
+          <Dialog.Close displayWhenAdapted asChild>
+            <Button theme="alt1" aria-label="Close">
+              <Text>Save changes</Text>
             </Button>
-            <Button
-              isDisabled={isInputInExerciseList || name.length === 0}
-              onPress={addExercise}>
-              Save
-            </Button>
-          </Button.Group>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
+          </Dialog.Close>
+        </YStack>
+
+        <Unspaced>
+          <Dialog.Close asChild>
+            <Button pos="absolute" t="$3" r="$3" size="$2" circular icon={X} />
+          </Dialog.Close>
+        </Unspaced>
+      </Dialog.Content>
+    </Dialog.Portal>
   );
 }
 

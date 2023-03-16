@@ -1,6 +1,7 @@
-import { AddIcon, Fab, ScrollView } from 'native-base';
+import { Plus } from '@tamagui/lucide-icons';
 import React, { useState } from 'react';
 import { ViewStyle } from 'react-native';
+import { Dialog, ScrollView, Button } from 'tamagui';
 import AddExercise from './AddExercise';
 import ExerciseList from './ExerciseList';
 
@@ -9,16 +10,17 @@ function HomeScreen() {
 
   return (
     <>
-      <ScrollView style={$background}>
-        <ExerciseList />
-        <Fab
-          position="absolute"
-          size="sm"
-          icon={<AddIcon />}
-          onPress={() => setOpenAddExercise(true)}
-        />
-      </ScrollView>
-      <AddExercise open={openAddExercise} setOpen={setOpenAddExercise} />
+      {/* <ScrollView> */}
+      <Button
+        position="absolute"
+        icon={Plus}
+        onPress={() => setOpenAddExercise(true)}
+      />
+      <ExerciseList />
+      {/* </ScrollView> */}
+      <Dialog>
+        <AddExercise open={openAddExercise} setOpen={setOpenAddExercise} />
+      </Dialog>
     </>
   );
 }

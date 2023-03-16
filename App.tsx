@@ -1,12 +1,13 @@
-import { NativeBaseProvider } from 'native-base';
 import React from 'react';
+import { TamaguiProvider } from 'tamagui';
 import HomeScreen from './src/screens/HomeScreen/HomeScreen';
+import config from './tamagui.config';
 
 function App(): JSX.Element {
   return (
-    <NativeBaseProvider>
+    <TamaguiProvider config={config}>
       <HomeScreen />
-    </NativeBaseProvider>
+    </TamaguiProvider>
   );
 }
 
